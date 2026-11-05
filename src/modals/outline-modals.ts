@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { PDFOutlineItem, PDFOutlines } from 'lib/outlines';
 import PDFPlus from 'main';
 import { PDFPlusModal } from 'modals';
@@ -114,7 +115,7 @@ export class PDFOutlineMoveModal extends FuzzySuggestModal<PDFOutlineItem> {
                 }
             }
         });
-        this.setPlaceholder('Type an outline item title');
+        this.setPlaceholder(ui('Type an outline item title'));
     }
 
     askDestination() {

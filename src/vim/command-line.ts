@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Notice, Platform, normalizePath } from 'obsidian';
 
 import { VimBindings } from './vim';
@@ -157,7 +158,7 @@ export class VimCommandLineMode extends VimBindingsMode {
             try {
                 this.executeCommand(cmd);
             } catch (err) {
-                new Notice(`${this.plugin.manifest.name} (Vim mode): ${t('notice.ex-command-error', 'Error occurred while executing the command: {err}', { err: String(err) })}`);
+                new Notice(ui("{0} (Vim mode): {1}", { 0: this.plugin.manifest.name, 1: t('notice.ex-command-error', 'Error occurred while executing the command: {err}', { err: String(err) }) }));
                 console.error(err);
             }
         }

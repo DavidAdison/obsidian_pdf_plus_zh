@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { getDirectPDFObj, uint8ArrayToArrayBuffer } from 'utils';
 import { Notice, TFile } from 'obsidian';
 import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFRef, PDFString, PDFNumber, PDFPageLeaf, PDFNull } from '@cantoo/pdf-lib';
@@ -179,7 +180,7 @@ export class PDFOutlines {
         const found = await outlines.findPDFjsOutlineTreeNode(item);
 
         if (!found) {
-            new Notice(`${plugin.manifest.name}: Failed to process the outline item.`);
+            new Notice(ui("{0}: Failed to process the outline item.", { 0: plugin.manifest.name }));
             return;
         }
 

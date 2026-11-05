@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { ButtonComponent, requireApiVersion } from 'obsidian';
 
 import PDFPlus from 'main';
@@ -23,21 +24,21 @@ export class InstallerVersionModal extends PDFPlusModal {
         super.onOpen();
 
         const name = this.plugin.manifest.name;
-        this.setTitle(`${name}: Obsidian installer update is required`);
+        this.setTitle(ui("{0}: Obsidian installer update is required", { 0: name }));
         this.contentEl.createEl('p', {
-            text: `Your Obsidian installer (${getInstallerVersion()}) is outdated and is incompatible with the latest ${name}. Please download the latest installer from Obsidian's website and re-install the Obsidian app.`,
+            text: ui("Your Obsidian installer ({0}) is outdated and is incompatible with the latest {1}. Please download the latest installer from Obsidian's website and re-install the Obsidian app.", { 0: getInstallerVersion(), 1: name }),
         });
 
         if (!requireApiVersion(minInstallerVersion)) {
             this.contentEl.createEl('p', {
-                text: `Also, in the very near future, Obsidian ${minInstallerVersion} or later will be required for you to be able to keep receiving updates of ${name}.`,
+                text: ui("Also, in the very near future, Obsidian {0} or later will be required for you to be able to keep receiving updates of {1}.", { 0: minInstallerVersion, 1: name }),
             });
         }
 
         this.contentEl.createDiv('modal-button-container', (el) => {
             const downloadUrl = 'https://obsidian.md/download';
             new ButtonComponent(el)
-                .setButtonText('Get installer from obsidian.md')
+                .setButtonText(ui('Get installer from obsidian.md'))
                 .setTooltip(downloadUrl)
                 .setCta()
                 .onClick(() => {
@@ -46,7 +47,7 @@ export class InstallerVersionModal extends PDFPlusModal {
 
             const helpUrl = 'https://help.obsidian.md/Getting+started/Update+Obsidian#Installer%20updates';
             new ButtonComponent(el)
-                .setButtonText('What is "installer update"? (help.obsidian.md)')
+                .setButtonText(ui('What is "installer update"? (help.obsidian.md)'))
                 .setTooltip(helpUrl)
                 .onClick(() => {
                     window.open(helpUrl);

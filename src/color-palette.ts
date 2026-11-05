@@ -1,3 +1,4 @@
+import { ui, templateName, colorName } from 'i18n';
 import { Menu, Notice, Platform, setIcon, setTooltip } from 'obsidian';
 
 import PDFPlus from 'main';
@@ -233,14 +234,14 @@ export class ColorPalette extends PDFPlusComponent {
     }
 
     addCopyActionDropdown(paletteEl: HTMLElement) {
-        let tooltip = 'Link copy format';
+        let tooltip = ui('Link copy format');
         if (!this.plugin.settings.colorPaletteInToolbar) {
-            tooltip = `${this.plugin.manifest.name}: link copy options (trigger via hotkeys)`;
+            tooltip = ui('{0}: link copy options (trigger via hotkeys)', { 0: this.plugin.manifest.name });
         }
 
         const buttonEl = this.addDropdown(
             paletteEl,
-            this.plugin.settings.copyCommands.map((cmd) => cmd.name),
+            this.plugin.settings.copyCommands.map((cmd) => templateName(cmd, this.plugin.getDefaultSettings().copyCommands)),
             'actionIndex',
             tooltip,
             () => {
@@ -267,9 +268,9 @@ export class ColorPalette extends PDFPlusComponent {
     addDisplayTextFormatDropdown(paletteEl: HTMLElement) {
         const buttonEl = this.addDropdown(
             paletteEl,
-            this.plugin.settings.displayTextFormats.map((format) => format.name),
+            this.plugin.settings.displayTextFormats.map((format) => templateName(format, this.plugin.getDefaultSettings().displayTextFormats)),
             'displayTextFormatIndex',
-            `Display text format`,
+            ui('Display text format'),
             () => {
                 if (this.plugin.settings.syncDisplayTextFormat && this.plugin.settings.syncDefaultDisplayTextFormat) {
                     this.plugin.settings.defaultDisplayTextFormatIndex = this.displayTextFormatIndex;
@@ -295,7 +296,7 @@ export class ColorPalette extends PDFPlusComponent {
 
         this.writeFileButtonEl = paletteEl.createDiv('clickable-icon', (el) => {
             setIcon(el, 'lucide-edit');
-            setTooltip(el, `Add ${this.plugin.settings.selectionBacklinkVisualizeStyle}s to file directly`);
+            setTooltip(el, ui("Add {0}s to file directly", { 0: ui(this.plugin.settings.selectionBacklinkVisualizeStyle) }));
             el.toggleClass('is-disabled', !this.lib.isEditable(this.child));
 
             let shown = false;
@@ -306,7 +307,7 @@ export class ColorPalette extends PDFPlusComponent {
                     const menu = new Menu()
                         .addItem((item) => {
                             item.setIcon('lucide-settings')
-                                .setTitle('Enable PDF editing...')
+                                .setTitle(ui('Enable PDF editing...'))
                                 .onClick(() => {
                                     this.plugin.openSettingTab()
                                         .scrollToHeading('edit');
@@ -346,7 +347,7 @@ export class ColorPalette extends PDFPlusComponent {
                 }
                 menu.addItem((item) => {
                     item.setIcon('lucide-settings')
-                        .setTitle(this.lib.isEditable(this.child) ? 'Disable PDF editing...' : 'Enable PDF editing...')
+                        .setTitle(this.lib.isEditable(this.child) ? ui('Disable PDF editing...') : ui('Enable PDF editing...'))
                         .onClick(() => {
                             this.plugin.openSettingTab()
                                 .scrollToHeading('edit');
@@ -378,7 +379,7 @@ export class ColorPalette extends PDFPlusComponent {
 
         this.importButtonEl = paletteEl.createDiv('clickable-icon', (el) => {
             setIcon(el, 'lucide-import');
-            setTooltip(el, `Import external PDF into vault`);
+            setTooltip(el, ui(`Import external PDF into vault`));
             el.addEventListener('click', () => {
                 this.importFile();
             });
@@ -400,7 +401,7 @@ export class ColorPalette extends PDFPlusComponent {
         if (!url || !file) return;
 
         if (!Platform.isDesktopApp && url.startsWith(Platform.resourcePathPrefix)) {
-            new Notice(`${this.plugin.manifest.name}: Importing local PDFs outside the vault is supported only on the desktop app.`);
+            new Notice(ui("{0}: Importing local PDFs outside the vault is supported only on the desktop app.", { 0: this.plugin.manifest.name }));
             return;
         }
 
@@ -413,11 +414,11 @@ export class ColorPalette extends PDFPlusComponent {
             if (this.paletteEl) {
                 this.addWriteFileToggle(this.paletteEl);
             }
-            new Notice(`${this.plugin.manifest.name}: Successfully imported the PDF file into the vault.`);
+            new Notice(ui("{0}: Successfully imported the PDF file into the vault.", { 0: this.plugin.manifest.name }));
             return;
         }
 
-        new Notice(`${this.plugin.manifest.name}: Import failed. Response status: ${res.status}`);
+        new Notice(ui("{0}: Import failed. Response status: {1}", { 0: this.plugin.manifest.name, 1: res.status }));
     }
 
     setWriteFile(value: boolean) {
@@ -428,7 +429,7 @@ export class ColorPalette extends PDFPlusComponent {
     addCropButton(paletteEl: HTMLElement) {
         this.cropButtonEl = paletteEl.createDiv('clickable-icon pdf-plus-rect-select', (el) => {
             setIcon(el, 'lucide-box-select');
-            setTooltip(el, 'Copy embed link to rectangular selection');
+            setTooltip(el, ui('Copy embed link to rectangular selection'));
 
             el.addEventListener('click', () => {
                 this.startRectangularSelection(false);
@@ -605,11 +606,11 @@ export class ColorPalette extends PDFPlusComponent {
 
     setTooltipToActionItem(itemEl: HTMLElement, name: string | null) {
         const pickerEl = itemEl.querySelector<HTMLInputElement>(':scope > .' + ColorPalette.CLS + '-item-inner')!;
-        const commandName = this.plugin.settings.copyCommands[this.actionIndex].name;
+        const commandName = templateName(this.plugin.settings.copyCommands[this.actionIndex], this.plugin.getDefaultSettings().copyCommands);
         const quiet = this.plugin.settings.quietColorPaletteTooltip;
         const tooltip = name !== null
-            ? (quiet ? name : `Copy link with format "${commandName}" & add ${name.toLowerCase()} ${this.plugin.settings.selectionBacklinkVisualizeStyle}`)
-            : (quiet ? 'No color specified' : `Copy link with "${commandName}" format without specifying color`);
+            ? (quiet ? colorName(name, this.plugin.settings.colors, this.plugin.getDefaultSettings().colors) : ui('Copy link with format "{0}" & add {1} {2}', { 0: commandName, 1: colorName(name, this.plugin.settings.colors, this.plugin.getDefaultSettings().colors), 2: ui(this.plugin.settings.selectionBacklinkVisualizeStyle) }))
+            : (quiet ? ui('No color specified') : ui('Copy link with "{0}" format without specifying color', { 0: commandName }));
         setTooltip(pickerEl, tooltip);
     }
 

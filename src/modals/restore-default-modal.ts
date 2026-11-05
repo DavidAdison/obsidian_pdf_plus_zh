@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { ButtonComponent, Notice } from 'obsidian';
 
 import { PDFPlusModal } from './base-modal';
@@ -8,13 +9,12 @@ export class RestoreDefaultModal extends PDFPlusModal {
     onOpen(): void {
         super.onOpen();
         this.containerEl.addClass('pdf-plus-restore-default-modal');
-        this.titleEl.setText(`${this.plugin.manifest.name}: Restore default settings`);
+        this.titleEl.setText(ui("{0}: Restore default settings", { 0: this.plugin.manifest.name }));
         this.contentEl.createEl('p', {
-            text: `This operation will overwrite your PDF++ config file (${(
+            text: ui("This operation will overwrite your PDF++ config file ({0}). You may want to back up the file before proceeding.", { 0: (
                 this.plugin.manifest.dir
                 ?? (this.app.vault.configDir + '/plugins/' + this.plugin.manifest.id)
-            ) + '/data.json'
-                }). You may want to back up the file before proceeding.`,
+            ) + '/data.json' }),
         });
 
         this.contentEl.createDiv('modal-button-container', (el) => {
@@ -24,7 +24,7 @@ export class RestoreDefaultModal extends PDFPlusModal {
                 .onClick(async () => {
                     await this.plugin.restoreDefaultSettings();
                     this.close();
-                    new Notice(`${this.plugin.manifest.name}: Default setting restored. Note that some options require a restart to take effect.`, 6000);
+                    new Notice(ui("{0}: Default setting restored. Note that some options require a restart to take effect.", { 0: this.plugin.manifest.name }), 6000);
                 });
             new ButtonComponent(el)
                 .setButtonText(t('modal.cancel', 'Cancel'))

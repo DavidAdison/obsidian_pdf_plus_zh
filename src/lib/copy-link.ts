@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Editor, EditorRange, MarkdownFileInfo, MarkdownView, Notice, TFile } from 'obsidian';
 
 import { PDFPlusLibSubmodule } from './submodule';
@@ -147,7 +148,7 @@ export class copyLinkLib extends PDFPlusLibSubmodule {
                 .trim();
         } catch (err) {
             console.error(err);
-            new Notice(`${this.plugin.manifest.name}: Display text format is invalid. Error: ${err.message}`, 3000);
+            new Notice(ui("{0}: Display text format is invalid. Error: {1}", { 0: this.plugin.manifest.name, 1: err.message }), 3000);
         }
     }
 
@@ -567,7 +568,7 @@ export class copyLinkLib extends PDFPlusLibSubmodule {
 
         const command = this.app.commands.findCommand(this.settings.commandToExecuteWhenTargetNotIdentified);
         if (!command) {
-            new Notice(`${this.plugin.manifest.name}: Command "${this.settings.commandToExecuteWhenTargetNotIdentified}" was not found. Please update the "Command to execute when pasting a link for the first time with auto-focus or auto-paste" setting.`);
+            new Notice(ui("{0}: Command \"{1}\" was not found. Please update the \"Command to execute when pasting a link for the first time with auto-focus or auto-paste\" setting.", { 0: this.plugin.manifest.name, 1: this.settings.commandToExecuteWhenTargetNotIdentified }));
             return false;
         }
 
@@ -601,15 +602,15 @@ export class copyLinkLib extends PDFPlusLibSubmodule {
             // However, for commands such as "Quick switcher: Open quick switcher", the file-open will be triggered after a long time.
             activeWindow.setTimeout(() => {
                 if (!isResolved) {
-                    const { noticeEl } = new Notice(`${this.plugin.manifest.name}: Could not find the auto-paste target markdown file within ${this.settings.autoPasteTargetDialogTimeoutSec} seconds.`);
-                    noticeEl.appendText(' Click ');
-                    noticeEl.createEl('a', { text: 'here' }, (anchorEl) => {
+                    const { noticeEl } = new Notice(ui("{0}: Could not find the auto-paste target markdown file within {1} seconds.", { 0: this.plugin.manifest.name, 1: this.settings.autoPasteTargetDialogTimeoutSec }));
+                    noticeEl.appendText(ui(' Click '));
+                    noticeEl.createEl('a', { text: ui('here') }, (anchorEl) => {
                         anchorEl.addEventListener('click', () => {
                             this.plugin.openSettingTab()
                                 .scrollTo('autoPasteTargetDialogTimeoutSec');
                         });
                     });
-                    noticeEl.appendText(' to change the timeout duration.');
+                    noticeEl.appendText(ui(' to change the timeout duration.'));
 
                     this.app.workspace.offref(eventRef);
                     resolve(false);
@@ -643,7 +644,7 @@ export class copyLinkLib extends PDFPlusLibSubmodule {
 
         const command = this.app.commands.findCommand(this.settings.commandToExecuteWhenTargetNotIdentified);
         if (!command) {
-            new Notice(`${this.plugin.manifest.name}: Command "${this.settings.commandToExecuteWhenTargetNotIdentified}" was not found. Please update the "Command to execute when pasting a link for the first time with auto-focus or auto-paste" setting.`);
+            new Notice(ui("{0}: Command \"{1}\" was not found. Please update the \"Command to execute when pasting a link for the first time with auto-focus or auto-paste\" setting.", { 0: this.plugin.manifest.name, 1: this.settings.commandToExecuteWhenTargetNotIdentified }));
             return false;
         }
 

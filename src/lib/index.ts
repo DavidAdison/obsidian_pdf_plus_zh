@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { App, Component, EditableFileView, FileView, MarkdownView, Notice, Platform, TFile, TextFileView, View, base64ToArrayBuffer, normalizePath, parseLinktext, requestUrl } from 'obsidian';
 import { CanvasFileData } from 'obsidian/canvas';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
@@ -841,7 +842,7 @@ export class PDFPlusLib {
             return await PDFDocument.load(buffer, { ignoreEncryption: readonly });
         } catch (e) {
             if (e instanceof EncryptedPDFError) {
-                new Notice(`${this.plugin.manifest.name}: The PDF file is encrypted. This plugin currently does not support editing encrypted PDF files.`, 8);
+                new Notice(ui("{0}: The PDF file is encrypted. This plugin currently does not support editing encrypted PDF files.", { 0: this.plugin.manifest.name }), 8);
             }
             throw e;
         }
@@ -1074,7 +1075,7 @@ export class PDFPlusLib {
 
         if (file instanceof TFile) {
             if (!existOk) {
-                new Notice(`${this.plugin.manifest.name}: File already exists: ${path}`);
+                new Notice(ui("{0}: File already exists: {1}", { 0: this.plugin.manifest.name, 1: path }));
             }
             if (typeof data === 'string') {
                 await this.app.vault.modify(file, data);

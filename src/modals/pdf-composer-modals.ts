@@ -3,6 +3,7 @@ import { PDFDocument, PageSizes } from '@cantoo/pdf-lib';
 
 import PDFPlus from 'main';
 import { PDFPlusModal } from 'modals';
+import { ui } from 'i18n';
 import { t } from './../i18n/index';
 
 
@@ -31,7 +32,7 @@ export class PDFPageDeleteModal extends PDFPlusModal {
     onOpen() {
         super.onOpen();
 
-        this.titleEl.setText(`${this.plugin.manifest.name}: delete page`);
+        this.titleEl.setText(ui("{0}: delete page", { 0: this.plugin.manifest.name }));
         this.contentEl.createEl('p', { text: t('modal.are-you-sure-delete-page', 'Are you sure you want to delete this page\?') });
         if (!this.plugin.settings.warnEveryAnnotationDelete) {
             this.contentEl.createEl('p', { cls: 'mod-warning', text: t('modal.links-pointing-to-page', 'There are one or more links pointing to this page.') });
@@ -130,7 +131,7 @@ export class PDFComposerModal extends PDFPlusModal {
 
     onOpen() {
         super.onOpen();
-        this.titleEl.setText(`${this.plugin.manifest.name}: Page composer`);
+        this.titleEl.setText(ui("{0}: Page composer", { 0: this.plugin.manifest.name }));
 
         let pageLabelUpdateMethod = this.defaultMethod;
         let inPlace = this.defaultInPlace;
@@ -139,11 +140,11 @@ export class PDFComposerModal extends PDFPlusModal {
             new Setting(this.contentEl)
                 .setName(t('modal.update-page-labels', 'Update the page labels\?'))
                 .setDesc(createFragment((el) => {
-                    el.createEl('a', { text: 'Learn more', href: 'https://github.com/RyotaUshio/obsidian-pdf-plus/wiki/Page-labels' });
+                    el.createEl('a', { text: ui('Learn more'), href: 'https://github.com/RyotaUshio/obsidian-pdf-plus/wiki/Page-labels' });
                 }))
                 .addDropdown((dropdown) => {
                     dropdown
-                        .addOptions(PAGE_LABEL_UPDATE_METHODS)
+                        .addOptions(Object.fromEntries(Object.entries(PAGE_LABEL_UPDATE_METHODS).map(([key, label]) => [key, ui(label)])))
                         .setValue(pageLabelUpdateMethod)
                         .onChange((value: PageLabelUpdateMethod) => {
                             pageLabelUpdateMethod = value;
@@ -208,7 +209,7 @@ export class PDFCreateModal extends PDFPlusModal {
     onOpen() {
         super.onOpen();
 
-        this.titleEl.setText(`${this.plugin.manifest.name}: Create new PDF`);
+        this.titleEl.setText(ui("{0}: Create new PDF", { 0: this.plugin.manifest.name }));
 
         this.addSetting()
             .setName(t('modal.page-size', 'Page size'))
@@ -229,8 +230,8 @@ export class PDFCreateModal extends PDFPlusModal {
             .setName(t('modal.orientation', 'Orientation'))
             .addDropdown((dropdown) => {
                 dropdown
-                    .addOption('portrait', 'Portrait')
-                    .addOption('landscape', 'Landscape')
+                    .addOption('portrait', ui('Portrait'))
+                    .addOption('landscape', ui('Landscape'))
                     .setValue(this.orientation)
                     .onChange((value) => {
                         if (value === 'portrait' || value === 'landscape') {

@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Setting, TFile, TextAreaComponent, MarkdownRenderer, RGB, ColorComponent, DropdownComponent } from 'obsidian';
 
 import PDFPlus from 'main';
@@ -188,7 +189,7 @@ export class PDFAnnotationEditModal extends PDFAnnotationModal {
             let dropdown: DropdownComponent;
             new Setting(this.contentEl)
                 .setName(t('modal.color', 'Color'))
-                .setDesc('You can choose a color from the color picker or select one from your custom named colors.')
+                .setDesc(ui('You can choose a color from the color picker or select one from your custom named colors.'))
                 .addColorPicker((_picker) => {
                     picker = _picker;
 
@@ -282,11 +283,11 @@ export class PDFAnnotationEditModal extends PDFAnnotationModal {
                 .then((setting) => {
                     this.previewEl = setting.controlEl.createDiv('preview-container markdown-rendered');
                     if (this.plugin.settings.renderMarkdownInStickyNote) {
-                        setting.setDesc(`Press ${this.app.hotkeyManager.printHotkeyForCommand('markdown:toggle-preview')} to toggle preview.`);
+                        setting.setDesc(ui("Press {0} to toggle preview.", { 0: this.app.hotkeyManager.printHotkeyForCommand('markdown:toggle-preview') }));
                     } else {
                         setting.setDesc(createFragment((el) => {
                             const anchorEl = createEl('a', {
-                                text: '"Render markdown in annotation popups when the annotation has text contents"',
+                                text: ui('"Render markdown in annotation popups when the annotation has text contents"'),
                              }, (el) => {
                                 el.onclick = (evt) => {
                                     const tab = this.plugin.openSettingTab();
@@ -338,7 +339,7 @@ export class PDFAnnotationEditModal extends PDFAnnotationModal {
             .setClass('no-border');
         this.buttonContainerEl.createDiv({
             cls: 'pdf-plus-annotation-edit-modal-save-instructions',
-            text: `Press ${getModifierNameInPlatform('Mod')} + Enter to save.`
+            text: ui("Press {0} + Enter to save.", { 0: getModifierNameInPlatform('Mod') })
         });
     }
 
@@ -349,7 +350,7 @@ export class PDFAnnotationEditModal extends PDFAnnotationModal {
 
     async onOpen() {
         super.onOpen();
-        this.titleEl.setText(`${this.plugin.manifest.name}: edit annotation contents`);
+        this.titleEl.setText(ui("{0}: edit annotation contents", { 0: this.plugin.manifest.name }));
         await this.readOldValues();
 
         for (const key of this.supportedKeys) {
@@ -407,7 +408,7 @@ export class PDFAnnotationDeleteModal extends PDFAnnotationModal {
     onOpen() {
         super.onOpen();
 
-        this.titleEl.setText(`${this.plugin.manifest.name}: delete annotation`);
+        this.titleEl.setText(ui("{0}: delete annotation", { 0: this.plugin.manifest.name }));
         this.contentEl.createEl('p', { text: t('modal.are-you-sure-delete-annotation', 'Are you sure you want to delete this annotation\?') });
         if (!this.plugin.settings.warnEveryAnnotationDelete) {
             this.contentEl.createEl('p', { cls: 'mod-warning', text: t('modal.links-pointing-to-annotation', 'There are one or more links pointing to this annotation.') });

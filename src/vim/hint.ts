@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Notice } from 'obsidian';
 
 import { hintnames_short } from './hintnames';
@@ -84,7 +85,7 @@ export class VimHintMode extends VimBindingsMode {
         const numHints = hintableEls.length;
 
         if (numHints === 0) {
-            new Notice(`${this.plugin.manifest.name} (Vim mode): ${t('notice.no-hintable-element', 'No hintable element found on this page')}`);
+            new Notice(ui("{0} (Vim mode): {1}", { 0: this.plugin.manifest.name, 1: t('notice.no-hintable-element', 'No hintable element found on this page') }));
             this.exit();
             this.vim.enterNormalMode();
             return;

@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 /**
  * Start dragging an PDF outline item, thumbnail image, or annotation popup to 
  * get ready to create a link to the heading in the markdown file.
@@ -59,7 +60,7 @@ export const registerOutlineDrag = async (plugin: PDFPlus, pdfOutlineViewer: PDF
                             ]);
 
                             if (!destItem || !itemToMove) {
-                                new Notice(`${plugin.manifest.name}: Failed to move the outline item.`);
+                                new Notice(ui("{0}: Failed to move the outline item.", { 0: plugin.manifest.name }));
                                 return;
                             }
 
@@ -100,7 +101,7 @@ export const registerOutlineDrag = async (plugin: PDFPlus, pdfOutlineViewer: PDF
                     const itemToMove = await outlines?.findPDFjsOutlineTreeNode(draggedItem);
 
                     if (!itemToMove) {
-                        new Notice(`${plugin.manifest.name}: Failed to move the outline item.`);
+                        new Notice(ui("{0}: Failed to move the outline item.", { 0: plugin.manifest.name }));
                         return;
                     }
 

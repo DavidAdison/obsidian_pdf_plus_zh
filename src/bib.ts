@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { ButtonComponent, HoverPopover, HoverParent, Platform, FileSystemAdapter, Notice, ExtraButtonComponent, Events } from 'obsidian';
 import { PDFDocumentProxy } from 'pdfjs-dist';
 
@@ -161,13 +162,13 @@ export class BibliographyManager extends PDFPlusComponent {
                         const msg = `${plugin.manifest.name}: AnyStyle not found at the path "${anystylePath}".`;
                         if (plugin.settings.anystylePath) {
                             const notice = new Notice(msg, 8000);
-                            notice.noticeEl.appendText(' Click ');
-                            notice.noticeEl.createEl('a', { text: 'here' }, (anchorEl) => {
+                            notice.noticeEl.appendText(ui(' Click '));
+                            notice.noticeEl.createEl('a', { text: ui('here') }, (anchorEl) => {
                                 anchorEl.addEventListener('click', () => {
                                     plugin.openSettingTab().scrollTo('anystylePath');
                                 });
                             });
-                            notice.noticeEl.appendText(' to update the path.');
+                            notice.noticeEl.appendText(ui(' to update the path.'));
                             console.error(msg);
                         }
                         else console.warn(msg);
@@ -400,7 +401,7 @@ export class BibliographyDom extends PDFPlusComponent {
                 }
             } else {
                 if (this.bib.initialized) {
-                    this.containerEl.createDiv({ text: 'No bibliography found' });
+                    this.containerEl.createDiv({ text: ui('No bibliography found') });
                 } else {
                     this.containerEl.createDiv({ text: t('notice.loading', 'Loading...') });
                     this.registerRenderOn('extracted');
@@ -421,7 +422,7 @@ export class BibliographyDom extends PDFPlusComponent {
                 });
             new ExtraButtonComponent(el)
                 .setIcon('lucide-settings')
-                .setTooltip('Customize...')
+                .setTooltip(ui('Customize...'))
                 .onClick(() => {
                     this.plugin.openSettingTab().scrollToHeading('citation');
                 });

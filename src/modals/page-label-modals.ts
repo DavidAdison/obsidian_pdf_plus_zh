@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { setTooltip } from 'obsidian';
 /**
  * For the details about how PDF page labels work, see the PDF specification
@@ -57,7 +58,7 @@ class PDFPageLabelSettingsForRange {
             .setName(t('modal.numbering-style', 'Numbering Style'))
             .addDropdown((dropdown) => {
                 dropdown
-                    .addOptions({ ...PAGE_LABEL_NUMBERING_STYLES, None: 'None' })
+                    .addOptions({ ...PAGE_LABEL_NUMBERING_STYLES, None: ui('None') })
                     .setValue(this.dict.style ?? 'None')
                     .onChange((value) => {
                         if (isPageLabelNumberingStyle(value)) this.dict.style = value;
@@ -107,7 +108,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
     async onOpen() {
         super.onOpen();
 
-        this.titleEl.setText(`${this.plugin.manifest.name}: edit page labels`);
+        this.titleEl.setText(ui("{0}: edit page labels", { 0: this.plugin.manifest.name }));
         new Setting(this.contentEl)
             .then((setting) => {
                 MarkdownRenderer.render(
@@ -147,7 +148,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
 
         if (pageLabels === null || pageLabels.rangeCount() === 0) {
             this.addHeading(this.controlEl, 'No page labels found', 'lucide-info')
-                .setDesc('This PDF document does not have any page labels.')
+                .setDesc(ui('This PDF document does not have any page labels.'))
                 .addButton((button) => {
                     button
                         .setButtonText(t('modal.create', 'Create'))
@@ -178,12 +179,12 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
             const afterNextRange = pageLabels.ranges[i + 2];
             const pageTo = pageLabels.getEndOfRange(i);
 
-            this.addHeading(rangeEl, `Page ${range.pageFrom}�?{pageTo}`, 'lucide-arrow-down-01')
+            this.addHeading(rangeEl, ui('Page {0}–{1}', { 0: range.pageFrom, 1: pageTo }), 'lucide-arrow-down-01')
                 .then((setting) => {
                     if (pageTo > range.pageFrom) {
                         setting.addExtraButton((button) => {
                             button.setIcon('lucide-separator-horizontal')
-                                .setTooltip('Divide this labeling range')
+                                .setTooltip(ui('Divide this labeling range'))
                                 .onClick(() => {
                                     pageLabels.divideRangeAtPage(range.pageFrom + 1, false);
                                     this.redisplay();
@@ -193,7 +194,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
                 })
                 .addExtraButton((button) => {
                     button.setIcon('lucide-x')
-                        .setTooltip('Label the pages in this range continuing from the previous range')
+                        .setTooltip(ui('Label the pages in this range continuing from the previous range'))
                         .onClick(() => {
                             pageLabels.removeRange(i);
                             this.redisplay();
@@ -202,8 +203,8 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
 
             new Setting(rangeEl)
                 .setName(t('modal.from', 'From'))
-                .setDesc('The index of the first page in this range.')
-                .then((setting) => setting.controlEl.appendText('Page'))
+                .setDesc(ui('The index of the first page in this range.'))
+                .then((setting) => setting.controlEl.appendText(ui('Page')))
                 .addText((text) => {
                     text.inputEl.type = 'number';
                     text.setValue('' + range.pageFrom)
@@ -225,8 +226,8 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
 
             new Setting(rangeEl)
                 .setName(t('modal.to', 'To'))
-                .setDesc('The index of the last page in this range.')
-                .then((setting) => setting.controlEl.appendText('Page'))
+                .setDesc(ui('The index of the last page in this range.'))
+                .then((setting) => setting.controlEl.appendText(ui('Page')))
                 .addText((text) => {
                     text.inputEl.type = 'number';
                     text.setValue('' + pageTo)
@@ -244,7 +245,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
                         .setDisabled(i === pageLabels.ranges.length - 1)
                         .then((text) => {
                             if (text.disabled) {
-                                setTooltip(text.inputEl, 'The last range cannot be extended.');
+                                setTooltip(text.inputEl, ui('The last range cannot be extended.'));
                             }
                         });
                     text.inputEl.addEventListener('blur', () => this.redisplay(), { once: true });
@@ -269,7 +270,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
     addPreviewButton(setting: Setting, page: number) {
         return setting.addExtraButton((button) => {
             button.setIcon('lucide-message-square')
-                .setTooltip(`Hover${this.plugin.requireModKeyForLinkHover() ? ('+' + getModifierNameInPlatform('Mod').toLowerCase()) : ''} to preview`)
+                .setTooltip(ui("Hover{0} to preview", { 0: this.plugin.requireModKeyForLinkHover() ? ('+' + getModifierNameInPlatform('Mod').toLowerCase()) : '' }))
                 .then((button) => {
                     this.component.registerDomEvent(button.extraSettingsEl, 'mouseover', (event) => {
                         this.app.workspace.trigger('hover-link', {
@@ -298,7 +299,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
                                 } else PDFPageLabels.removeFromDocument(this.doc);
                                 await this.app.vault.modifyBinary(this.file, uint8ArrayToArrayBuffer(await this.doc.save()));
                             } else {
-                                new Notice(`${this.plugin.manifest.name}: Something went wrong.`);
+                                new Notice(ui("{0}: Something went wrong.", { 0: this.plugin.manifest.name }));
                             }
                             this.close();
                         });

@@ -10,7 +10,7 @@ import { addProductMenuItems, getSelectedItemsRecursive, fixOpenSubmenu, registe
 import { DEFAULT_SETTINGS, NamedTemplate } from 'settings';
 import { ColorPalette } from 'color-palette';
 import { PDFPlusComponent } from 'lib/component';
-import { t } from 'i18n';
+import { t, templateName, ui } from 'i18n';
 import { uint8ArrayToArrayBuffer } from 'utils';
 
 
@@ -538,7 +538,7 @@ export class PDFPlusContextMenu extends PDFPlusMenu {
                 if (lib.isEditable(child) && isVisible('write-file')) {
                     PDFPlusProductMenuComponent
                         .create(this, child.palette)
-                        .setSection('write-file', t('menu.add-style-to-file', 'Add {style} to file', { style: plugin.settings.selectionBacklinkVisualizeStyle }), 'lucide-edit')
+                        .setSection('write-file', t('menu.add-style-to-file', 'Add {style} to file', { style: ui(plugin.settings.selectionBacklinkVisualizeStyle) }), 'lucide-edit')
                         .setShowNoColorButton(false)
                         .addItems(plugin.settings.writeFileProductMenuConfig)
                         .onItemClick(({ copyFormat, displayTextFormat, colorName }) => {
@@ -912,7 +912,7 @@ export class PDFPlusProductMenuComponent extends PDFPlusComponent {
     private addNamedTemplateItems(menu: Menu, templates: NamedTemplate[], checkedIndex: number, map: Map<MenuItem, string>, onClick: (template: NamedTemplate, evt: MouseEvent | KeyboardEvent) => any) {
         for (let i = 0; i < templates.length; i++) {
             menu.addItem((item) => {
-                item.setTitle(templates[i].name)
+                item.setTitle(templateName(templates[i], [...DEFAULT_SETTINGS.displayTextFormats, ...DEFAULT_SETTINGS.copyCommands]))
                     .onClick((evt) => {
                         onClick(templates[i], evt);
                     });

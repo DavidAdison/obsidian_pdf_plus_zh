@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Editor, MarkdownFileInfo, MarkdownView, normalizePath, Notice, ObsidianProtocolData, Platform, TFile } from 'obsidian';
 
 import { PDFPlusLibSubmodule } from './submodule';
@@ -80,7 +81,7 @@ export class DummyFileManager extends PDFPlusLibSubmodule {
             const folderPath = this.getFolderPathForDummyFiles(info.file);
             const dummyFiles = await this.createDummyFilesInFolder(folderPath, uris);
 
-            new Notice(`${this.plugin.manifest.name}: Dummy files created successfully.`);
+            new Notice(ui("{0}: Dummy files created successfully.", { 0: this.plugin.manifest.name }));
 
             // Insert links to dummy files into the editor
             dummyFiles.forEach((dummyFile, index) => {

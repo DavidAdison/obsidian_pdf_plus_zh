@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Command, MarkdownView, Notice, TFile, WorkspaceLeaf, normalizePath, setIcon } from 'obsidian';
 
 import { PDFPlusLibSubmodule } from './submodule';
@@ -384,7 +385,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
             const display = view.viewer.child?.getPageLinkAlias(state.page);
             const link = this.lib.generateMarkdownLink(view.file, '', subpath, display).slice(1);
             navigator.clipboard.writeText(link);
-            new Notice(`${this.plugin.manifest.name}: Link copied to clipboard`);
+            new Notice(ui("{0}: Link copied to clipboard", { 0: this.plugin.manifest.name }));
 
             this.plugin.lastCopiedDestInfo = { file: view.file, destArray };
         }
@@ -679,7 +680,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
                 this.lib.composer.extractPages(file, [page], dstPath, false, keepLabels, inPlace)
                     .then(async (file) => {
                         if (!file) {
-                            new Notice(`${this.plugin.manifest.name}: Failed to extract page.`);
+                            new Notice(ui("{0}: Failed to extract page.", { 0: this.plugin.manifest.name }));
                             return;
                         }
                         if (this.settings.openAfterExtractPages) {
@@ -722,7 +723,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
                 this.lib.composer.extractPages(file, { from: page }, dstPath, false, keepLabels, inPlace)
                     .then(async (file) => {
                         if (!file) {
-                            new Notice(`${this.plugin.manifest.name}: Failed to divide PDF.`);
+                            new Notice(ui("{0}: Failed to divide PDF.", { 0: this.plugin.manifest.name }));
                             return;
                         }
                         if (this.settings.openAfterExtractPages) {
@@ -814,7 +815,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
                 });
 
                 navigator.clipboard.writeText(text);
-                new Notice(`${this.plugin.manifest.name}: Outline copied to clipboard.`);
+                new Notice(ui("{0}: Outline copied to clipboard.", { 0: this.plugin.manifest.name }));
             })();
         }
 
@@ -961,9 +962,9 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
 
                 if (data) {
                     await navigator.clipboard.writeText(data);
-                    new Notice(`${this.plugin.manifest.name}: Highlighted text copied to clipboard.`);
+                    new Notice(ui("{0}: Highlighted text copied to clipboard.", { 0: this.plugin.manifest.name }));
                 } else {
-                    new Notice(`${this.plugin.manifest.name}: No highlighted text found.`);
+                    new Notice(ui("{0}: No highlighted text found.", { 0: this.plugin.manifest.name }));
                 }
             })();
         }
@@ -1000,7 +1001,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
         text += '```\n' + JSON.stringify({ settings, styleSettings, styleSheet }) + '\n```\n';
 
         await navigator.clipboard.writeText(text);
-        new Notice(`${this.plugin.manifest.name}: Debug info copied to clipboard.`);
+        new Notice(ui("{0}: Debug info copied to clipboard.", { 0: this.plugin.manifest.name }));
     }
 
     loadDebugInfo(checking: boolean) {
@@ -1011,7 +1012,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
                 try {
                     const { settings, styleSettings, styleSheet } = JSON.parse(await navigator.clipboard.readText());
 
-                    new Notice(`${this.plugin.manifest.name}: Debug info loaded from clipboard.`);
+                    new Notice(ui("{0}: Debug info loaded from clipboard.", { 0: this.plugin.manifest.name }));
 
                     console.debug('Loaded debug info:');
                     console.debug('- settings:', settings);
@@ -1028,7 +1029,7 @@ export class PDFPlusCommands extends PDFPlusLibSubmodule {
 
                 } catch (err) {
                     console.error(err);
-                    new Notice(`${this.plugin.manifest.name}: Debug info not found in clipboard.`);
+                    new Notice(ui("{0}: Debug info not found in clipboard.", { 0: this.plugin.manifest.name }));
                 }
             })();
         }

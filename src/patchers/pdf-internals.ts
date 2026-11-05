@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Component, MarkdownRenderer, Notice, TFile, debounce, setIcon, setTooltip, Keymap, Menu, Platform, requireApiVersion, apiVersion } from 'obsidian';
 import { around } from 'monkey-around';
 import { PDFDocumentProxy } from 'pdfjs-dist';
@@ -265,7 +266,7 @@ const patchPDFViewerChild = (plugin: PDFPlus, child: PDFViewerChild) => {
                             });
                         }
                     } catch (e) {
-                        new Notice(`${plugin.manifest.name}: An error occurred while mounting the color palette to the toolbar.`);
+                        new Notice(ui("{0}: An error occurred while mounting the color palette to the toolbar.", { 0: plugin.manifest.name }));
                         console.error(e);
                     }
                 };
@@ -892,7 +893,7 @@ const patchPDFViewerChild = (plugin: PDFPlus, child: PDFViewerChild) => {
 
                             iconContainerEl.createDiv('clickable-icon pdf-plus-copy-annotation-link', (iconEl) => {
                                 setIcon(iconEl, 'lucide-copy');
-                                setTooltip(iconEl, 'Copy link');
+                                setTooltip(iconEl, ui('Copy link'));
                                 iconEl.addEventListener('click', async () => {
                                     const palette = lib.getColorPaletteAssociatedWithNode(popupMetaEl);
                                     if (!palette) return;
@@ -912,7 +913,7 @@ const patchPDFViewerChild = (plugin: PDFPlus, child: PDFViewerChild) => {
                             const subtype = annotationElement.data.subtype;
                             iconContainerEl.createDiv('clickable-icon pdf-plus-edit-annotation', (editButtonEl) => {
                                 setIcon(editButtonEl, 'lucide-pencil');
-                                setTooltip(editButtonEl, 'Edit');
+                                setTooltip(editButtonEl, ui('Edit'));
                                 editButtonEl.addEventListener('click', async () => {
                                     if (this.file) {
                                         PDFAnnotationEditModal
@@ -927,7 +928,7 @@ const patchPDFViewerChild = (plugin: PDFPlus, child: PDFViewerChild) => {
                         if (lib.isEditable(child) && plugin.settings.enableAnnotationDeletion) {
                             iconContainerEl.createDiv('clickable-icon pdf-plus-delete-annotation', (deleteButtonEl) => {
                                 setIcon(deleteButtonEl, 'lucide-trash');
-                                setTooltip(deleteButtonEl, 'Delete');
+                                setTooltip(deleteButtonEl, ui('Delete'));
                                 deleteButtonEl.addEventListener('click', async () => {
                                     if (this.file) {
                                         new PDFAnnotationDeleteModal(plugin, this.file, page, id)
@@ -941,7 +942,7 @@ const patchPDFViewerChild = (plugin: PDFPlus, child: PDFViewerChild) => {
                     popupMetaEl.addEventListener('contextmenu', (evt) => {
                         new Menu()
                             .addItem((item) => {
-                                item.setTitle('Customize...')
+                                item.setTitle(ui('Customize...'))
                                     .setIcon('lucide-settings')
                                     .onClick(() => {
                                         plugin.openSettingTab().scrollToHeading('annot');

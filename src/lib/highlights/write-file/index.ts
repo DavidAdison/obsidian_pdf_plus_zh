@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Notice, TFile } from 'obsidian';
 
 import PDFPlus from 'main';
@@ -74,7 +75,7 @@ export class AnnotationWriteFileLib extends PDFPlusLibSubmodule {
                     try {
                         annotationID = await annotator(child.file, pageNumber, rects);
                     } catch (e) {
-                        new Notice(`${this.plugin.manifest.name}: An error occurred while attemping to add an annotation.`);
+                        new Notice(ui("{0}: An error occurred while attemping to add an annotation.", { 0: this.plugin.manifest.name }));
                         console.error(e);
                     }
                     return { annotationID, rects };

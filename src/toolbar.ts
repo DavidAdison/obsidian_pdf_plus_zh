@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Menu, Platform, setIcon, setTooltip } from 'obsidian';
 
 import PDFPlus from 'main';
@@ -89,7 +90,7 @@ export class PDFPlusToolbar extends PDFPlusComponent {
 
         toolbar.zoomInEl.after(createDiv('clickable-icon', (dropdownEl) => {
             setIcon(dropdownEl, 'lucide-chevron-down');
-            setTooltip(dropdownEl, 'Display options');
+            setTooltip(dropdownEl, ui('Display options'));
 
             let shown = false;
             dropdownEl.addEventListener('click', () => {
@@ -151,7 +152,7 @@ export class PDFPlusToolbar extends PDFPlusComponent {
                         .addItem((item) => {
                             item.setSection('scroll')
                                 .setIcon('lucide-chevrons-left-right')
-                                .setTitle('Hotizontal scroll')
+                                .setTitle(ui('Hotizontal scroll'))
                                 .setChecked(scrollMode === ScrollMode.HORIZONTAL)
                                 .onClick(() => {
                                     eventBus.dispatch('switchscrollmode', {

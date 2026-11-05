@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { Constructor, EventRef, Events, FileSystemAdapter, Keymap, Menu, Notice, ObsidianProtocolData, PaneType, Platform, Plugin, SettingTab, TFile, addIcon, apiVersion, loadPdfJs, requireApiVersion } from 'obsidian';
 import * as pdflib from '@cantoo/pdf-lib';
 
@@ -783,7 +784,7 @@ export default class PDFPlus extends Plugin {
 					el.append(
 						'PDF++: There is a newer version available! ',
 						createEl('a', {
-							text: 'Update now',
+							text: ui('Update now'),
 							href: 'obsidian://show-plugin?id=pdf-plus',
 						})
 					);
@@ -800,32 +801,32 @@ export default class PDFPlus extends Plugin {
 	private registerHoverLinkSources() {
 		this.registerHoverLinkSource('pdf-plus', {
 			defaultMod: true,
-			display: 'PDF++: backlink highlights'
+			display: ui('PDF++: backlink highlights')
 		});
 
 		this.registerHoverLinkSource(PDFInternalLinkPostProcessor.HOVER_LINK_SOURCE_ID, {
 			defaultMod: true,
-			display: 'PDF++: internal links in PDF (except for citations)'
+			display: ui('PDF++: internal links in PDF (except for citations)')
 		});
 
 		this.registerHoverLinkSource(BibliographyManager.HOVER_LINK_SOURCE_ID, {
 			defaultMod: false,
-			display: 'PDF++: citation links in PDF'
+			display: ui('PDF++: citation links in PDF')
 		});
 
 		this.registerHoverLinkSource(PDFExternalLinkPostProcessor.HOVER_LINK_SOURCE_ID, {
 			defaultMod: true,
-			display: 'PDF++: external links in PDF'
+			display: ui('PDF++: external links in PDF')
 		});
 
 		this.registerHoverLinkSource(PDFOutlineItemPostProcessor.HOVER_LINK_SOURCE_ID, {
 			defaultMod: true,
-			display: 'PDF++: outlines (bookmarks)'
+			display: ui('PDF++: outlines (bookmarks)')
 		});
 
 		this.registerHoverLinkSource(PDFThumbnailItemPostProcessor.HOVER_LINK_SOURCE_ID, {
 			defaultMod: true,
-			display: 'PDF++: thumbnails'
+			display: ui('PDF++: thumbnails')
 		});
 	}
 
@@ -904,8 +905,12 @@ export default class PDFPlus extends Plugin {
 	}
 
 	requireModKeyForLinkHover(id = 'pdf-plus') {
-		// @ts-ignore
-		return this.app.internalPlugins.plugins['page-preview'].instance.overrides[id]
+		// Page Preview moved per-source modifier overrides to options in newer Obsidian versions.
+		const preview = this.app.internalPlugins.plugins['page-preview']?.instance as {
+			overrides?: Record<string, boolean>; options?: Record<string, boolean>;
+		} | undefined;
+		return preview?.options?.[id]
+			?? preview?.overrides?.[id]
 			?? this.app.workspace.hoverLinkSources[id]?.defaultMod
 			?? false;
 	}

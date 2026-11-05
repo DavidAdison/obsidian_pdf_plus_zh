@@ -1,3 +1,4 @@
+import { ui } from 'i18n';
 import { TFile, normalizePath, parseLinktext, Pos, Notice, Reference, RGB, FrontmatterLinkCache, EmbedCache, LinkCache } from 'obsidian';
 import { PDFDocument } from '@cantoo/pdf-lib';
 
@@ -117,7 +118,7 @@ export class PDFFileOperator extends PDFPlusLibSubmodule {
 
         if (file instanceof TFile) {
             if (!existOk) {
-                new Notice(`${this.plugin.manifest.name}: File already exists: ${path}`);
+                new Notice(ui("{0}: File already exists: {1}", { 0: this.plugin.manifest.name, 1: path }));
             }
             await this.app.vault.modifyBinary(file, uint8ArrayToArrayBuffer(buffer));
             return file;
@@ -336,7 +337,7 @@ export class PDFLinkUpdater extends PDFPlusLibSubmodule {
         await Promise.all(promises);
 
         if (counts.links) {
-            new Notice(`${this.plugin.manifest.name}: Updated ${counts.links} links in ${counts.files} files.`);
+            new Notice(ui("{0}: Updated {1} links in {2} files.", { 0: this.plugin.manifest.name, 1: counts.links, 2: counts.files }));
         }
 
         return newFile;

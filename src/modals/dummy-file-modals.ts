@@ -1,7 +1,7 @@
 import { PDFPlusModal } from 'modals';
 import { normalizePath, Notice, Platform, Setting } from 'obsidian';
 import { FuzzyFolderSuggest, getModifierNameInPlatform } from 'utils';
-import { t } from './../i18n/index';
+import { t, ui } from './../i18n/index';
 
 
 export class DummyFileModal extends PDFPlusModal {
@@ -31,12 +31,12 @@ export class DummyFileModal extends PDFPlusModal {
         }
         this.folderPath = this.lib.dummyFileManager.getFolderPathForDummyFiles(this.app.workspace.getActiveFile());
 
-        this.titleEl.setText(`${this.plugin.manifest.name}: Create dummy file for external PDF`);
+        this.titleEl.setText(ui("{0}: Create dummy file for external PDF", { 0: this.plugin.manifest.name }));
         this.modalEl.createDiv('', (div) => {
             new Setting(div).setDesc(createFragment((el) => {
                 const keys = this.plugin.settings.modifierToDropExternalPDFToCreateDummy;
-                el.appendText(`You can also use ${keys.length ? (keys.map(getModifierNameInPlatform).join('+') + ' +') : ''} drag & drop to create dummy files. `);
-                el.createEl('a', { text: 'Learn more about dummy PDF files', href: 'https://ryotaushio.github.io/obsidian-pdf-plus/external-pdf-files' });
+                el.appendText(ui("You can also use {0} drag & drop to create dummy files. ", { 0: keys.length ? (keys.map(getModifierNameInPlatform).join('+') + ' +') : '' }));
+                el.createEl('a', { text: ui('Learn more about dummy PDF files'), href: 'https://ryotaushio.github.io/obsidian-pdf-plus/external-pdf-files' });
             }));
             setTimeout(() => {
                 this.modalEl.insertBefore(div, this.contentEl);
@@ -85,12 +85,12 @@ export class DummyFileModal extends PDFPlusModal {
     addSourceLocationSetting() {
         return this.addSetting()
             .setName(t('modal.source-location', 'Source location'))
-            .setDesc('Where the external PDF is located.')
+            .setDesc(ui('Where the external PDF is located.'))
             .addDropdown((dropdown) => {
                 dropdown
                     .addOptions({
-                        'file': 'On this computer',
-                        'web': 'Web'
+                        'file': ui('On this computer'),
+                        'web': ui('Web')
                     })
                     .setValue(this.source ?? '')
                     .onChange((value: 'file' | 'web') => {
@@ -105,9 +105,9 @@ export class DummyFileModal extends PDFPlusModal {
         return this.addSetting()
             .setName(t('modal.folder-to-save-dummy-files', 'Folder to save the dummy files'))
             .setDesc(createFragment((el) => {
-                el.appendText('You can specify the default folder in the ');
-                el.createEl('a', { text: 'settings', href: 'obsidian://pdf-plus?setting=dummyFileFolderPath' });
-                el.appendText('.');
+                el.appendText(ui('You can specify the default folder in the '));
+                el.createEl('a', { text: ui('settings'), href: 'obsidian://pdf-plus?setting=dummyFileFolderPath' });
+                el.appendText(ui('.'));
             }))
             .addText((text) => {
                 text.inputEl.size = 30;
@@ -122,7 +122,7 @@ export class DummyFileModal extends PDFPlusModal {
     addLocalFileSetting() {
         this.addSetting()
             .setName(t('modal.absolute-path-to-pdf', 'Absolute path to the PDF'))
-            .setDesc('Type the path in the input box or click the "Browse" button to select the file.')
+            .setDesc(ui('Type the path in the input box or click the "Browse" button to select the file.'))
             .addButton((button) => {
                 button
                     .setButtonText(t('modal.browse', 'Browse'))
@@ -144,7 +144,7 @@ export class DummyFileModal extends PDFPlusModal {
             .addExtraButton((button) => {
                 button
                     .setIcon('plus')
-                    .setTooltip('Add another file')
+                    .setTooltip(ui('Add another file'))
                     .onClick(() => {
                         this.uris.push('');
                         this.display();
@@ -157,11 +157,11 @@ export class DummyFileModal extends PDFPlusModal {
     addWebFileSetting() {
         this.addSetting()
             .setName(t('modal.url-of-pdf', 'URL of the PDF'))
-            .setDesc('Must start with "https://" or "http://".')
+            .setDesc(ui('Must start with "https://" or "http://".'))
             .addExtraButton((button) => {
                 button
                     .setIcon('plus')
-                    .setTooltip('Add another URL')
+                    .setTooltip(ui('Add another URL'))
                     .onClick(() => {
                         this.uris.push('');
                         this.display();
@@ -198,7 +198,7 @@ export class DummyFileModal extends PDFPlusModal {
                 .addExtraButton((button) => {
                     button
                         .setIcon('trash')
-                        .setTooltip(`Remove this ${this.source === 'file' ? 'file' : 'URL'}`)
+                        .setTooltip(ui("Remove this {0}", { 0: this.source === 'file' ? ui('file') : 'URL' }))
                         .onClick(() => {
                             this.uris.splice(i, 1);
                             this.display();
@@ -230,11 +230,11 @@ export class DummyFileModal extends PDFPlusModal {
         this.uris = this.uris.filter((uri) => uri);
 
         if (!this.uris.length) {
-            new Notice(`${this.plugin.manifest.name}: The external PDF location is not specified.`);
+            new Notice(ui("{0}: The external PDF location is not specified.", { 0: this.plugin.manifest.name }));
             return;
         }
         if (!this.folderPath) {
-            new Notice(`${this.plugin.manifest.name}: The folder to save the dummy files is not specified.`);
+            new Notice(ui("{0}: The folder to save the dummy files is not specified.", { 0: this.plugin.manifest.name }));
             return;
         }
 
@@ -248,7 +248,7 @@ export class DummyFileModal extends PDFPlusModal {
         if (this.folderPath) {
             this.folderPath = normalizePath(this.folderPath);
             const files = await this.lib.dummyFileManager.createDummyFilesInFolder(this.folderPath, this.uris);
-            new Notice(`${this.plugin.manifest.name}: Dummy files created successfully.`);
+            new Notice(ui("{0}: Dummy files created successfully.", { 0: this.plugin.manifest.name }));
 
             for (const file of files) {
                 if (file) {
@@ -257,7 +257,7 @@ export class DummyFileModal extends PDFPlusModal {
                 }
             }
         } else {
-            new Notice(`${this.plugin.manifest.name}: Failed to create dummy files for the following URIs: ${this.uris.join(', ')}`);
+            new Notice(ui("{0}: Failed to create dummy files for the following URIs: {1}", { 0: this.plugin.manifest.name, 1: this.uris.join(', ') }));
         }
     }
 }
