@@ -147,7 +147,7 @@ export class PDFPageLabelEditModal extends PDFPageLabelModal {
         this.controlEl.empty();
 
         if (pageLabels === null || pageLabels.rangeCount() === 0) {
-            this.addHeading(this.controlEl, 'No page labels found', 'lucide-info')
+            this.addHeading(this.controlEl, ui('No page labels found'), 'lucide-info')
                 .setDesc(ui('This PDF document does not have any page labels.'))
                 .addButton((button) => {
                     button

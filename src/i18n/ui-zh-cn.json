@@ -853,5 +853,10 @@
   "note": "笔记",
   "important": "重要",
   "Note": "笔记",
-  "Important": "重要"
+  "Important": "重要",
+  "Link copied": "链接已复制",
+  "Writing highlight annotation into file...": "正在向 PDF 写入高亮批注…",
+  "Invalid selection": "选区无效",
+  "Link copied & pasted": "链接已复制并粘贴",
+  "Link copied but paste target not identified": "链接已复制，但未确定粘贴目标"
 }
