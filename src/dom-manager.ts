@@ -206,8 +206,8 @@ export class DomManager extends PDFPlusComponent {
 	}
 
 	toCSSVariableName(colorName: string): string | null {
-		// extract alphanumeric parts from colorName, and then concatenate them with '-'
-		let encoded = colorName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+		// CSS identifiers can contain Unicode letters, including user-defined CJK color names.
+		let encoded = colorName.toLowerCase().replace(/[^a-z0-9\u0080-\uFFFF]+/g, '-');
 		// strip leading and trailing '-'
 		encoded = encoded.replace(/^-+|-+$/g, '');
 		return encoded ? '--pdf-plus-' + encoded + '-rgb' : null;

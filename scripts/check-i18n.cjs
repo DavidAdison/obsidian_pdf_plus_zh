@@ -52,6 +52,18 @@ const cases=[
 ];
 for(const [instance,defaultMod,expected]of cases){const obj=new probeModule.exports();obj.app={internalPlugins:{plugins:{'page-preview':{instance}}},workspace:{hoverLinkSources:defaultMod===undefined?{}:{'pdf-plus':{defaultMod}}}};assert.equal(obj.requireModKeyForLinkHover(),expected);}
 
+// CJK color names must map to CSS variables so PDF++ callouts use their configured color.
+const domManager=ts.createSourceFile('dom-manager.ts',fs.readFileSync(path.join(root,'src/dom-manager.ts'),'utf8'),ts.ScriptTarget.Latest,true);
+let cssVariableMethod;
+function findCssVariableMethod(n){if(ts.isMethodDeclaration(n)&&n.name.getText(domManager)==='toCSSVariableName')cssVariableMethod=n.getText(domManager);ts.forEachChild(n,findCssVariableMethod);}findCssVariableMethod(domManager);
+assert.ok(cssVariableMethod);
+const cssProbe=ts.transpileModule('class Probe {'+cssVariableMethod+'}; module.exports=Probe;',{compilerOptions:{target:ts.ScriptTarget.ES2020,module:ts.ModuleKind.CommonJS}}).outputText;
+const cssProbeModule={exports:{}};vm.runInNewContext(cssProbe,{module:cssProbeModule});
+const cssVariableName=(name)=>new cssProbeModule.exports().toCSSVariableName(name);
+assert.equal(cssVariableName('补充内容'),'--pdf-plus-补充内容-rgb');
+assert.equal(cssVariableName('解释'),'--pdf-plus-解释-rgb');
+assert.equal(cssVariableName('Bright Red'),'--pdf-plus-bright-red-rgb');
+
 const missing=[],invalidParams=[];let calls=0;
 function walk(dir){for(const item of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,item.name);if(item.isDirectory())walk(p);else if(item.name.endsWith('.ts')){const sf=ts.createSourceFile(p,fs.readFileSync(p,'utf8'),ts.ScriptTarget.Latest,true);function visit(n){if(ts.isCallExpression(n)&&ts.isIdentifier(n.expression)&&n.expression.text==='t'&&n.arguments[0]&&ts.isStringLiteralLike(n.arguments[0])){calls++;const key=n.arguments[0].text;if(!Object.hasOwn(dict,key))missing.push(key);const text=dict[key]??'';if(/(?<!\{)\{[A-Za-z_][\w]*\}(?!\})/.test(text)&&!n.arguments[2])invalidParams.push(key);}ts.forEachChild(n,visit);}visit(sf);}}}walk(path.join(root,'src'));
 assert.deepEqual(missing,[],'Every referenced translation key must exist');
